@@ -1,10 +1,18 @@
-
+import React, { Component } from 'react'
 import './App.css';
+import Navbar from './components/Navbar';
+import Newsbox from './components/Newsbox';
 
-function App() {
-  return (
-    <div > under development</div>
-  );
+export default class App extends Component {
+  render() {
+    return (
+      <div>
+        <Navbar />
+        <Newsbox/>
+
+      </div>
+    )
+  }
 }
 
-export default App;
+
