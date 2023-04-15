@@ -2,18 +2,23 @@ import React, { Component } from 'react'
 
 export default class Newsitems extends Component {
   render() {
+
+    let { title, description, imgurl, newsurl } = this.props;
+
     return (
       <div>
-        <div class="card" style={{ width: "18rem;" }}>
-          <img src="..." class="card-img-top" alt="..." />
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">
-              Some quick example text to build on the card title and make up the
-              bulk of the card's content.
-            </p>
-            <a href="/" class="btn btn-primary">
-              Go somewhere
+        <div className="card" style={{ width: "18rem" }}>
+          <img
+            src={imgurl}
+            className="card-img-top"
+            alt="..."
+            style={{ height: "200px", width: " 100% " }}
+          />
+          <div className="card-body">
+            <h5 className="card-title">{title}</h5>
+            <p className="card-text">{description}</p>
+            <a href={newsurl} className="btn btn-sm btn-primary">
+              Read more
             </a>
           </div>
         </div>
