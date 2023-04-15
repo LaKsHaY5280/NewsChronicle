@@ -3,25 +3,47 @@ import React, { Component } from "react";
 import Newsitems from "./Newsitems";
 
 export default class Newsbox extends Component {
-
-
   constructor() {
     super();
     this.state = {
       articles: [],
     };
   }
-
   async componentDidMount() {
     let fetchingurl =
-      "https://newsapi.org/v2/everything?q=India&apiKey=2df9f61b4103445cb7786b27d42d1265";
+      "https://newsapi.org/v2/everything?q=India&apiKey=2df9f61b4103445cb7786b27d42d1265&page=1";
     const response = await fetch(fetchingurl);
     const data = await response.json();
 
     this.setState({
       articles: data.articles,
+      page: 1,
     });
   }
+
+  prevpage = async () => {
+    let fetchingurl = `https://newsapi.org/v2/everything?q=India&apiKey=2df9f61b4103445cb7786b27d42d1265&page=${
+      this.state.page - 1
+    }`;
+    let response = await fetch(fetchingurl);
+    let data = await response.json();
+    this.setState({
+      articles: data.articles,
+      page: this.state.page - 1,
+    });
+  };
+
+  nextpage = async () => {
+    let fetchingurl = `https://newsapi.org/v2/everything?q=India&apiKey=2df9f61b4103445cb7786b27d42d1265&page=${
+      this.state.page + 1
+    }`;
+    let response = await fetch(fetchingurl);
+    let data = await response.json();
+    this.setState({
+      articles: data.articles,
+      page: this.state.page + 1,
+    });
+  };
 
   render() {
     return (
@@ -49,6 +71,23 @@ export default class Newsbox extends Component {
                 </div>
               );
             })}
+          </div>
+          <div className="d-flex justify-content-between">
+            <button
+              disabled={this.state.page <= 1}
+              type="button"
+              className="btn btn-dark"
+              onClick={this.prevpage}
+            >
+              &larr; Previous
+            </button>
+            <button
+              type="button"
+              className="btn btn-dark"
+              onClick={this.nextpage}
+            >
+              Next &rarr;
+            </button>
           </div>
         </div>
       </div>
