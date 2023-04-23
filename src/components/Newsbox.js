@@ -1,8 +1,16 @@
 import React, { Component } from "react";
 import Spinner from "./Spinner";
 import Newsitems from "./Newsitems";
+import PropTypes from "prop-types";
 
 export default class Newsbox extends Component {
+  static propTypes = {
+    category: PropTypes.string,
+  };
+  static defaultProps = {
+    category: "general",
+  };
+
   constructor() {
     super();
     this.state = {
@@ -12,7 +20,7 @@ export default class Newsbox extends Component {
 
   async componentDidMount() {
     let fetchingurl =
-      "https://newsapi.org/v2/everything?q=India&apiKey=2df9f61b4103445cb7786b27d42d1265&pageSize=20&page=1";
+      "https://newsapi.org/v2/top-headlines?country=in&category=general&apiKey=2df9f61b4103445cb7786b27d42d1265&pageSize=30&page=1";
     const response = await fetch(fetchingurl);
     const data = await response.json();
 
@@ -26,7 +34,9 @@ export default class Newsbox extends Component {
   }
 
   prevpage = async () => {
-    let fetchingurl = `https://newsapi.org/v2/everything?q=India&apiKey=2df9f61b4103445cb7786b27d42d1265&pageSize=20&page=${
+    let fetchingurl = `https://newsapi.org/v2/top-headlines?country=in&category=${
+      this.props.category
+    }&apiKey=2df9f61b4103445cb7786b27d42d1265&pageSize=30&page=${
       this.state.page - 1
     }`;
     this.setState({ loading: true });
@@ -40,7 +50,9 @@ export default class Newsbox extends Component {
   };
 
   nextpage = async () => {
-    let fetchingurl = `https://newsapi.org/v2/everything?q=India&apiKey=2df9f61b4103445cb7786b27d42d1265&pageSize=20&page=${
+    let fetchingurl = `https://newsapi.org/v2/top-headlines?country=in&category=${
+      this.props.category
+    }&apiKey=2df9f61b4103445cb7786b27d42d1265&pageSize=30&page=${
       this.state.page + 1
     }`;
     this.setState({ loading: true });
@@ -58,8 +70,10 @@ export default class Newsbox extends Component {
       <div className="container">
         <h2 className="my-3 ">Highlights</h2>
         <div className="container my-4">
+          {this.state.loading && <Spinner />}
           <div className="row">
-            {this.state.articles &&
+            {!this.state.loading &&
+              this.state.articles &&
               this.state.articles.map((element) => {
                 return (
                   <div className="col-md-4" key={element.url}>
@@ -99,7 +113,7 @@ export default class Newsbox extends Component {
               {console.log(" page " + this.state.page)}
               {console.log(" status " + this.state.status)}
               {console.log(" tr " + this.state.totalResults)}
-              {console.log(" ceil " + Math.ceil(this.state.totalResults / 20))}
+              {console.log(" ceil " + Math.ceil(this.state.totalResults / 30))}
               {console.log(
                 " dis " + this.state.page >=
                   Math.ceil(this.state.totalResults / 20)
