@@ -11,8 +11,8 @@ export default class Newsbox extends Component {
     category: "general",
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       articles: [],
       page: 1,
@@ -20,10 +20,20 @@ export default class Newsbox extends Component {
       status: "",
       loading: false,
     };
+    document.title = `Newschronicle -  ${this.capitalizeFirstLetter(
+      this.props.category
+    )}`;
   }
+
+  updateDocumentTitle = () => {
+    document.title = `Newschronicle - ${this.capitalizeFirstLetter(
+      this.props.category
+    )}`;
+  };
 
   async componentDidMount() {
     this.fetchNews();
+    this.updateDocumentTitle();
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -32,6 +42,7 @@ export default class Newsbox extends Component {
       prevState.page !== this.state.page
     ) {
       this.fetchNews();
+      this.updateDocumentTitle();
     }
   }
 
@@ -60,11 +71,16 @@ export default class Newsbox extends Component {
   nextpage = () => {
     this.setState({ page: this.state.page + 1 });
   };
+  capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
   render() {
     return (
       <div className="container">
-        <h2 className="my-3 ">Highlights</h2>
+        <h2 className="my-3 ">
+          Headlines - {this.capitalizeFirstLetter(this.props.category)}
+        </h2>
         <div className="container my-4">
           {this.state.loading && <Spinner />}
           <div className="row">
@@ -87,7 +103,7 @@ export default class Newsbox extends Component {
                       }
                       newsurl={element.url}
                       author={element.author}
-                      date={element.publishedAt}  
+                      date={element.publishedAt}
                     />
                   </div>
                 );
