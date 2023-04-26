@@ -1,0 +1,13 @@
+body {
+    overflow-x: hidden !important;
+    /* This will hide the horizontal scrollbar */
+}
+
+.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.infinite-scroll-component {
+    overflow: hidden;
+}

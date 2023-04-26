@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import Spinner from "./Spinner";
-import Newsitems from "./Newsitems";
 import PropTypes from "prop-types";
 import InfiniteScroll from "react-infinite-scroll-component";
+import "./Newsbosty.css";
+import noimg from "./noimg.jpg";
+import Newsitems from "./Newsitems.js";
 
 export default class Newsbox extends Component {
   static propTypes = {
@@ -10,12 +12,14 @@ export default class Newsbox extends Component {
   };
   static defaultProps = {
     category: "general",
+    defaultkey: "default",
   };
 
   constructor(props) {
     super(props);
     this.state = {
       articles: [],
+      newArticles: [],
       page: 1,
       totalResults: 0,
       status: "",
@@ -58,24 +62,24 @@ export default class Newsbox extends Component {
 
   fetchNews = async () => {
     this.setState({ loading: true });
-    let fetchingurl = `https://newsapi.org/v2/top-headlines?country=in&category=${
-      this.props.category
-    }&apiKey=2df9f61b4103445cb7786b27d42d1265&pageSize=15&page=${
-      this.state.page - 1
-    }`;
-    const response = await fetch(fetchingurl);
-    const data = await response.json();
+    let fetchingurl = `https://newsapi.org/v2/top-headlines?&apiKey=2df9f61b4103445cb7786b27d42d1265&country=in&pageSize=15&page=${this.state.page}&category=${this.props.category}`;
 
-    this.setState({
-      articles:
-        this.state.page === 1
-          ? data.articles
-          : [...this.state.articles, ...data.articles],
-      totalResults: data.totalResults,
-      status: data.status,
-      loading: false,
-    });
-    return data.articles;
+    try {
+      const response = await fetch(fetchingurl);
+      const jsonData = await response.json();
+      this.setState({
+        articles:
+          this.state.page === 1
+            ? jsonData.articles
+            : [...this.state.articles, ...jsonData.articles],
+        totalResults: jsonData.totalResults,
+        loading: false,
+      });
+      return jsonData.articles;
+    } catch (error) {
+      console.log(error);
+      this.setState({ loading: false, status: "error" });
+    }
   };
 
   capitalizeFirstLetter = (string) => {
@@ -84,46 +88,55 @@ export default class Newsbox extends Component {
 
   render() {
     return (
-      <div className="container">
-        <h2 className="my-3 ">
-          Headlines - {this.capitalizeFirstLetter(this.props.category)}
-        </h2>
-        <div className="container my-4">
-          <InfiniteScroll
-            dataLength={this.state.articles.length}
-            next={this.fetchMoreData}
-            hasMore={this.state.articles.length < this.state.totalResults}
-            loader={<Spinner />}
-          >
-            <div className="row">
-              {!this.state.loading &&
-                this.state.articles &&
-                this.state.articles.map((element, index) => {
-                  return (
-                    <div className="col-md-4" key={element.url || index}>
-                      <Newsitems
-                        title={element.title ? element.title.slice(0, 40) : ""}
-                        description={
-                          element.description
-                            ? element.description.slice(0, 90)
-                            : ""
-                        }
-                        imgurl={
-                          element.urlToImage
-                            ? element.urlToImage
-                            : "https://1.semantic-ui.com/images/wireframe/square-image.png"
-                        }
-                        newsurl={element.url}
-                        author={element.author}
-                        date={element.publishedAt}
-                      />
-                    </div>
-                  );
-                })}
-            </div>
-          </InfiniteScroll>
-          <div className="d-flex justify-content-between"></div>
-        </div>
+      <div className="container my-5">
+        <h1 className="text-center my-5">
+          Newschronicle - {this.capitalizeFirstLetter(this.props.category)}
+        </h1>
+
+        <InfiniteScroll
+          dataLength={this.state.articles ? this.state.articles.length : 0}
+          next={this.fetchMoreData}
+          hasMore={
+            this.state.articles &&
+            this.state.articles.length &&
+            this.state.articles.length < this.state.totalResults
+          }
+          loader={<Spinner />}
+          endMessage={
+            <p className="text-center">
+              {this.state.status === "error"
+                ? "Oops! Something went wrong."
+                : "Yay! You have seen it all."}
+            </p>
+          }
+        >
+          <div className="row">
+            {!this.state.articles ||
+            (this.state.articles.length === 0 && !this.state.loading) ? (
+              <div className="alert alert-danger" role="alert">
+                No news articles found.
+              </div>
+            ) : (
+              this.state.articles.map((element) => {
+                return (
+                  <div key={element.url} className="col-md-4">
+                    <Newsitems
+                      title={element.title ? element.title : ""}
+                      description={
+                        element.description ? element.description : ""
+                      }
+                      imageUrl={element.urlToImage ? element.urlToImage : noimg}
+                      newsUrl={element.url}
+                      author={element.author ? element.author : "Unknown"}
+                      date={element.publishedAt ? element.publishedAt : ""}
+                      source={element.source.name}
+                    />
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </InfiniteScroll>
       </div>
     );
   }

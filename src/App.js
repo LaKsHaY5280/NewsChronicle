@@ -13,6 +13,12 @@ export default class App extends Component {
           <Routes>
             <Route
               exact
+              path="/NewsChronicle"
+              key="general"
+              element={<Newsbox category="general" />}
+            />
+            <Route
+              exact
               path="/general"
               key="general"
               element={<Newsbox category="general" />}
