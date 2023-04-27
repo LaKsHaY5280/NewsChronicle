@@ -42,45 +42,59 @@ export default class Newsbox extends Component {
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.category !== this.props.category ||
-      prevState.page !== this.state.page
-    ) {
+    if (prevProps.category !== this.props.category) {
+      this.setState(
+        {
+          articles: [],
+          page: 1,
+        },
+        async () => {
+          this.fetchNews();
+          this.updateDocumentTitle();
+        }
+      );
+    } else if (prevState.page !== this.state.page) {
       this.fetchNews();
       this.updateDocumentTitle();
     }
   }
 
   fetchMoreData = async () => {
-    this.setState({ page: this.state.page + 1 }, async () => {
-      const newArticles = await this.fetchNews();
-      this.setState({
-        articles: [...this.state.articles, ...newArticles],
-      });
-    });
+    this.setState(
+      {
+        page: this.state.page + 1,
+        loading: true,
+      },
+      async () => {
+        const newArticles = await this.fetchNews();
+        this.setState({
+          articles: [...this.state.articles, ...newArticles],
+          loading: false,
+        });
+      }
+    );
   };
 
   fetchNews = async () => {
     this.setState({ loading: true });
-    let fetchingurl = `https://newsapi.org/v2/top-headlines?&apiKey=2df9f61b4103445cb7786b27d42d1265&country=in&pageSize=15&page=${this.state.page}&category=${this.props.category}`;
+    const fetchingurl = `https://newsapi.org/v2/top-headlines?&apiKey=2df9f61b4103445cb7786b27d42d1265&country=in&pageSize=6&page=${this.state.page}&category=${this.props.category}`;
 
     try {
       const response = await fetch(fetchingurl);
-      const jsonData = await response.json();
+      const data = await response.json();
+      const articleUrls = new Set(this.state.articles.map((article) => article.url));
+      const uniqueArticles = data.articles.filter((article) => !articleUrls.has(article.url));
       this.setState({
-        articles:
-          this.state.page === 1
-            ? jsonData.articles
-            : [...this.state.articles, ...jsonData.articles],
-        totalResults: jsonData.totalResults,
-        loading: false,
+        articles: [...this.state.articles, ...uniqueArticles],
+        totalResults: data.totalResults,
       });
-      return jsonData.articles;
+      return uniqueArticles ;
     } catch (error) {
       console.log(error);
       this.setState({ loading: false, status: "error" });
     }
   };
+  
 
   capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -95,6 +109,7 @@ export default class Newsbox extends Component {
 
         <InfiniteScroll
           dataLength={this.state.articles ? this.state.articles.length : 0}
+          style={{ overflow: "hidden" }}
           next={this.fetchMoreData}
           hasMore={
             this.state.articles &&
@@ -118,18 +133,24 @@ export default class Newsbox extends Component {
               </div>
             ) : (
               this.state.articles.map((element) => {
+                if (!element) {
+                  return null;
+                }
                 return (
                   <div key={element.url} className="col-md-4">
                     <Newsitems
-                      title={element.title ? element.title : ""}
+                      title={element.title ? element.title : "No title"}
                       description={
-                        element.description ? element.description : ""
+                        element.description
+                          ? element.description
+                          : "No description"
                       }
-                      imageUrl={element.urlToImage ? element.urlToImage : noimg}
-                      newsUrl={element.url}
+                      imgurl={element.urlToImage ? element.urlToImage : noimg}
+                      newsurl={element.url}
                       author={element.author ? element.author : "Unknown"}
-                      date={element.publishedAt ? element.publishedAt : ""}
-                      source={element.source.name}
+                      date={
+                        element.publishedAt ? element.publishedAt : "unknown"
+                      }
                     />
                   </div>
                 );
