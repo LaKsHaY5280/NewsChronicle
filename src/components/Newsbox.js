@@ -76,9 +76,11 @@ export default class Newsbox extends Component {
   };
 
   fetchNews = async () => {
+    this.props.setprog(10);
     this.setState({ loading: true });
     const fetchingurl = `https://newsapi.org/v2/top-headlines?&apiKey=2df9f61b4103445cb7786b27d42d1265&country=in&pageSize=6&page=${this.state.page}&category=${this.props.category}`;
 
+  
     try {
       const response = await fetch(fetchingurl);
       const data = await response.json();
@@ -88,6 +90,7 @@ export default class Newsbox extends Component {
         articles: [...this.state.articles, ...uniqueArticles],
         totalResults: data.totalResults,
       });
+      this.props.setprog(100);
       return uniqueArticles ;
     } catch (error) {
       console.log(error);
@@ -133,30 +136,32 @@ export default class Newsbox extends Component {
               </div>
             ) : (
               this.state.articles.map((element) => {
-                if (!element) {
+                if (element) {
+                  return (
+                    <div key={element.url} className="col-md-4">
+                      <Newsitems
+                        title={element.title ? element.title : "No title"}
+                        description={
+                          element.description
+                            ? element.description
+                            : "No description"
+                        }
+                        imgurl={element.urlToImage ? element.urlToImage : noimg}
+                        newsurl={element.url}
+                        author={element.author ? element.author : "Unknown"}
+                        date={
+                          element.publishedAt ? element.publishedAt : "unknown"
+                        }
+                      />
+                    </div>
+                  );
+                } else {
                   return null;
                 }
-                return (
-                  <div key={element.url} className="col-md-4">
-                    <Newsitems
-                      title={element.title ? element.title : "No title"}
-                      description={
-                        element.description
-                          ? element.description
-                          : "No description"
-                      }
-                      imgurl={element.urlToImage ? element.urlToImage : noimg}
-                      newsurl={element.url}
-                      author={element.author ? element.author : "Unknown"}
-                      date={
-                        element.publishedAt ? element.publishedAt : "unknown"
-                      }
-                    />
-                  </div>
-                );
               })
             )}
           </div>
+            <div></div>
         </InfiniteScroll>
       </div>
     );
