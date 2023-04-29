@@ -78,7 +78,7 @@ export default class Newsbox extends Component {
   fetchNews = async () => {
     this.props.setprog(10);
     this.setState({ loading: true });
-    const fetchingurl = `https://newsapi.org/v2/top-headlines?&apiKey=2df9f61b4103445cb7786b27d42d1265&country=in&pageSize=6&page=${this.state.page}&category=${this.props.category}`;
+    const fetchingurl = `https://newsapi.org/v2/top-headlines?&apiKey=${this.props.newskey}&country=in&pageSize=6&page=${this.state.page}&category=${this.props.category}`;
 
   
     try {

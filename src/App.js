@@ -7,6 +7,8 @@ import LoadingBar from "react-top-loading-bar";
 export default class App extends Component {
   state = { progress: 0 };
 
+  newskey = process.env.REACT_APP_NEWSKEY;
+
   setProgress = (progress) => {
     this.setState({ progress: progress });
   };
@@ -23,7 +25,11 @@ export default class App extends Component {
               path="/NewsChronicle"
               key="general"
               element={
-                <Newsbox setprog={this.setProgress} category="general" />
+                <Newsbox
+                  setprog={this.setProgress}
+                  newskey={this.newskey}
+                  category="general"
+                />
               }
             />
             <Route
@@ -31,7 +37,11 @@ export default class App extends Component {
               path="/general"
               key="general"
               element={
-                <Newsbox setprog={this.setProgress} category="general" />
+                <Newsbox
+                  setprog={this.setProgress}
+                  newskey={this.newskey}
+                  category="general"
+                />
               }
             />
             <Route
@@ -39,21 +49,35 @@ export default class App extends Component {
               path="/entertainment"
               key="entertainment"
               element={
-                <Newsbox setprog={this.setProgress} category="entertainment" />
+                <Newsbox
+                  setprog={this.setProgress}
+                  newskey={this.newskey}
+                  category="entertainment"
+                />
               }
             />
             <Route
               exact
               path="/sports"
               key="sports"
-              element={<Newsbox setprog={this.setProgress} category="sports" />}
+              element={
+                <Newsbox
+                  setprog={this.setProgress}
+                  newskey={this.newskey}
+                  category="sports"
+                />
+              }
             />
             <Route
               exact
               path="/technology"
               key="technology"
               element={
-                <Newsbox setprog={this.setProgress} category="technology" />
+                <Newsbox
+                  setprog={this.setProgress}
+                  newskey={this.newskey}
+                  category="technology"
+                />
               }
             />
             <Route
@@ -61,21 +85,35 @@ export default class App extends Component {
               path="/business"
               key="business"
               element={
-                <Newsbox setprog={this.setProgress} category="business" />
+                <Newsbox
+                  setprog={this.setProgress}
+                  newskey={this.newskey}
+                  category="business"
+                />
               }
             />
             <Route
               exact
               path="/health"
               key="health"
-              element={<Newsbox setprog={this.setProgress} category="health" />}
+              element={
+                <Newsbox
+                  setprog={this.setProgress}
+                  newskey={this.newskey}
+                  category="health"
+                />
+              }
             />
             <Route
               exact
               path="/science"
               key="science"
               element={
-                <Newsbox setprog={this.setProgress} category="science" />
+                <Newsbox
+                  setprog={this.setProgress}
+                  newskey={this.newskey}
+                  category="science"
+                />
               }
             />
           </Routes>
