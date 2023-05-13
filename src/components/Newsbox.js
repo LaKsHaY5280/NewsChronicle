@@ -10,7 +10,7 @@ const Newsbox = (props) => {
   const [articles, setArticles] = useState([]);
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
-  const [status, setStatus] = useState("");
+  const [status] = useState("");
   const [loading, setLoading] = useState(false);
 
   const capitalizeFirstLetter = (string) => {
@@ -33,16 +33,21 @@ const Newsbox = (props) => {
 
   useEffect(() => {
     updateNews();
-  }, [props.category]);
+  }, [props.category, page]);
 
   const fetchMoreData = async () => {
     setPage(page + 1);
-    const url = `https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&apiKey=${props.newskey}&page=${page}&pageSize=6`;
+    const pageSize = 6;
+    const url = `https://newsapi.org/v2/top-headlines?country=in&category=${
+      props.category
+    }&apiKey=${props.newskey}&page=${page + 1}&pageSize=${pageSize}`;
     let data = await fetch(url);
     let parsedData = await data.json();
     setArticles(articles.concat(parsedData.articles));
     setTotalResults(parsedData.totalResults);
   };
+  
+  
 
   return (
     <div className="container my-5">
