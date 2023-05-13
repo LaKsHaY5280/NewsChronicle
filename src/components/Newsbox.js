@@ -37,8 +37,10 @@ const Newsbox = (props) => {
   };
 
   useEffect(() => {
-    setArticles([]); // Reset articles to an empty array
+    document.title = `NewsChronicle - ${capitalizeFirstLetter(props.category)}`;
+    setArticles([]);
     updateNews(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.category]);
 
   useEffect(() => {
@@ -100,6 +102,8 @@ const Newsbox = (props) => {
                     />
                   </div>
                 );
+              } else {
+                return <div>No articles found.</div>;
               }
             })
           )}

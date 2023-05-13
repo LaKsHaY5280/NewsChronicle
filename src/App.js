@@ -9,9 +9,6 @@ const App = () => {
 
   const [progress, setProgress] = useState(0);
 
-  const updateProgress = (newprogress) => {
-    setProgress(newprogress);
-  };
 
   return (
     <Router>
@@ -19,7 +16,7 @@ const App = () => {
         <LoadingBar
           color="#f11946"
           progress={progress}
-          onLoaderFinished={() => updateProgress(0)}
+          onLoaderFinished={() => setProgress(0)}
         />
         <Navbar />
         <Routes>
@@ -29,7 +26,7 @@ const App = () => {
             key="general"
             element={
               <Newsbox
-                setprog={updateProgress}
+                setprog={setProgress}
                 newskey={newskey}
                 category="general"
               />
@@ -41,7 +38,7 @@ const App = () => {
             key="general"
             element={
               <Newsbox
-                setprog={updateProgress}
+                setprog={setProgress}
                 newskey={newskey}
                 category="general"
               />
@@ -53,7 +50,7 @@ const App = () => {
             key="entertainment"
             element={
               <Newsbox
-                setprog={updateProgress}
+                setprog={setProgress}
                 newskey={newskey}
                 category="entertainment"
               />
@@ -65,7 +62,7 @@ const App = () => {
             key="sports"
             element={
               <Newsbox
-                setprog={updateProgress}
+                setprog={setProgress}
                 newskey={newskey}
                 category="sports"
               />
@@ -77,7 +74,7 @@ const App = () => {
             key="technology"
             element={
               <Newsbox
-                setprog={updateProgress}
+                setprog={setProgress}
                 newskey={newskey}
                 category="technology"
               />
@@ -89,7 +86,7 @@ const App = () => {
             key="business"
             element={
               <Newsbox
-                setprog={updateProgress}
+                setprog={setProgress}
                 newskey={newskey}
                 category="business"
               />
@@ -101,7 +98,7 @@ const App = () => {
             key="health"
             element={
               <Newsbox
-                setprog={updateProgress}
+                setprog={setProgress}
                 newskey={newskey}
                 category="health"
               />
@@ -113,7 +110,7 @@ const App = () => {
             key="science"
             element={
               <Newsbox
-                setprog={updateProgress}
+                setprog={setProgress}
                 newskey={newskey}
                 category="science"
               />
