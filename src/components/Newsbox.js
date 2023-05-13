@@ -17,41 +17,46 @@ const Newsbox = (props) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
-  const updateNews = async () => {
+  const updateNews = async (pageToUpdate) => {
     props.setprog(10);
-    const url = `https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&apiKey=${props.newskey}&page=${page}&pageSize=6`;
+    // Reset articles to an empty array
+    const url = `https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&apiKey=${props.newskey}&page=${pageToUpdate}&pageSize=6`;
     setLoading(true);
     let data = await fetch(url);
     props.setprog(30);
     let parsedData = await data.json();
     props.setprog(70);
-    setArticles(parsedData.articles);
+    if (pageToUpdate === 1) {
+      setArticles(parsedData.articles);
+    } else {
+      setArticles((prevArticles) => prevArticles.concat(parsedData.articles));
+    }
     setTotalResults(parsedData.totalResults);
     setLoading(false);
     props.setprog(100);
   };
 
   useEffect(() => {
-    updateNews();
-  }, [props.category, page]);
+    setArticles([]); // Reset articles to an empty array
+    updateNews(1);
+  }, [props.category]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [props.category]);
 
   const fetchMoreData = async () => {
-    setPage(page + 1);
-    const pageSize = 6;
-    const url = `https://newsapi.org/v2/top-headlines?country=in&category=${
-      props.category
-    }&apiKey=${props.newskey}&page=${page + 1}&pageSize=${pageSize}`;
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    setArticles(articles.concat(parsedData.articles));
-    setTotalResults(parsedData.totalResults);
+    const newPage = page + 1;
+    setPage(newPage);
+    updateNews(newPage);
   };
-  
-  
 
   return (
-    <div className="container my-5">
-      <h1 className="text-center my-5">
+    <div className="container my-5 mx-5" style={{ marginTop: "10%" }}>
+      <h1
+        className="text-center "
+        style={{ marginTop: "9%", marginBottom: "3%" }}
+      >
         Newschronicle - {capitalizeFirstLetter(props.category)}
       </h1>
 
